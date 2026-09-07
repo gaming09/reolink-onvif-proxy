@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Container version="2">
+  <Name>Reolink-ONVIF-Proxy</Name>
+  <Repository>ghcr.io/gaming09/reolink-onvif-proxy:latest</Repository>
+  <Registry>https://github.com/gaming09/reolink-onvif-proxy/pkgs/container/reolink-onvif-proxy</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/gaming09/reolink-onvif-proxy/issues</Support>
+  <Project>https://github.com/gaming09/reolink-onvif-proxy</Project>
+  <Overview>Normalize malformed HTTP responses from affected Reolink ONVIF firmware so Frigate can use the camera's native PTZ service. Video, audio, and credentials remain direct between Frigate and the camera.&#xD;
+&#xD;
+Example Frigate configuration:&#xD;
+&#xD;
+cameras:&#xD;
+  camera_name:&#xD;
+    onvif:&#xD;
+      host: &lt;unraid-server-address&gt;&#xD;
+      port: 18890&#xD;
+      user: &lt;camera-username&gt;&#xD;
+      password: &lt;existing camera password&gt;&#xD;
+      tls_insecure: true&#xD;
+      ignore_time_mismatch: true</Overview>
+  <Category>HomeAutomation: Security:</Category>
+  <WebUI>http://[IP]:[PORT:18890]/health</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/gaming09/reolink-onvif-proxy/main/templates/reolink-onvif-proxy.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/gaming09/reolink-onvif-proxy/main/icon.png</Icon>
+  <ReadMe>https://raw.githubusercontent.com/gaming09/reolink-onvif-proxy/main/README.md</ReadMe>
+  <ExtraParams>--read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop=ALL --security-opt=no-new-privileges:true</ExtraParams>
+  <ExtraSearchTerms>reolink frigate onvif proxy camera pan tilt zoom ptz</ExtraSearchTerms>
+  <Requires>A Reolink camera with an ONVIF service reachable from Unraid. Install one instance per affected camera and assign each instance a unique host port.</Requires>
+  <Changes>2026-09-06: Initial release with DockerMan settings, health endpoint, response normalization, and optional client allowlist.</Changes>
+  <Date>2026-09-06</Date>
+  <License>MIT</License>
+
+  <Config Name="ONVIF proxy host port" Target="18890" Default="18890" Mode="tcp" Description="Port Frigate uses to reach this proxy. Use a unique host port for each installed camera." Type="Port" Display="always" Required="true" Mask="false">18890</Config>
+  <Config Name="Camera name" Target="CAMERA_NAME" Default="reolink-camera" Description="Friendly label used in health output and logs." Type="Variable" Display="always" Required="true" Mask="false">reolink-camera</Config>
+  <Config Name="Camera IP or hostname" Target="CAMERA_HOST" Default="" Description="LAN address of the Reolink camera." Type="Variable" Display="always" Required="true" Mask="false"></Config>
+  <Config Name="Camera ONVIF port" Target="CAMERA_PORT" Default="8000" Description="Native ONVIF service port exposed by the camera. Reolink commonly uses 8000." Type="Variable" Display="always" Required="true" Mask="false">8000</Config>
+  <Config Name="I/O timeout" Target="IO_TIMEOUT" Default="15" Description="Maximum upstream read or connection wait in seconds." Type="Variable" Display="advanced" Required="true" Mask="false">15</Config>
+  <Config Name="Allowed clients" Target="ALLOWED_CLIENTS" Default="" Description="Optional comma-separated IP/CIDR allowlist. Leave empty to accept any client that can reach this LAN port. Docker NAT may present clients as a 172.16.0.0/12 gateway address." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Log level" Target="LOG_LEVEL" Default="INFO" Description="Python log level: DEBUG, INFO, WARNING, or ERROR." Type="Variable" Display="advanced" Required="true" Mask="false">INFO</Config>
+</Container>
